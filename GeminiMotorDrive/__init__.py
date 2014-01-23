@@ -164,6 +164,7 @@ class GeminiG6(object):
     denergize_on_kill : bool
     encoder_resolution : int
     electrical_pitch : float
+    motion_commanded : bool
 
     Notes
     -----
@@ -1707,6 +1708,26 @@ class GeminiG6(object):
     @max_velocity.setter
     def max_velocity(self, value):
         self._set_parameter('DMVLIM', value, float)
+
+    @property
+    def motion_commanded(self):
+        """ Whether motion is commanded or not.
+
+        ``bool``
+
+        Can't be set.
+
+        Notes
+        -----
+        It is the value of the first bit of the 'TAS' command.
+
+        """
+        rsp = self.send_command('TAS', immediate=True)
+        if self.command_error(rsp) or len(rsp[4]) != 1 \
+                or rsp[4][0][0:4] != '*TAS':
+            return False
+        else:
+            return (rsp[4][0][4] == '1')
 
 
 class LinearMotorGV6(GeminiG6):
