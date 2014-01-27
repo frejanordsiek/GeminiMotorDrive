@@ -1003,7 +1003,7 @@ class GeminiG6(object):
             after the drive is killed or not.
 
         """
-        return (not self.command_error(self.send_command('PS',
+        return (not self.command_error(self.send_command('K', \
                 timeout=1.0, immediate=True, max_retries=max_retries)))
 
     def reset(self, max_retries=0):
