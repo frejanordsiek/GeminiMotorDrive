@@ -1,0 +1,5 @@
+================
+GeminiMotorDrive
+================
+
+.. include:: ../../README.rst
