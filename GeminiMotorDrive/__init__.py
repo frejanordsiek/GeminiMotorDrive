@@ -1032,7 +1032,7 @@ class GeminiG6(object):
         Gets program 'n' from the drive and returns its commands.
 
         Parameters
-        ---------
+        ----------
         n : int
             Which program to get.
         timeout : number, optional
@@ -1087,7 +1087,7 @@ class GeminiG6(object):
         the existing one is identical, it is considered a success).
 
         Parameters
-        ---------
+        ----------
         n : int
             Which program to get.
         commands : list or tuple of strings
@@ -1194,7 +1194,7 @@ class GeminiG6(object):
         collected.
 
         Parameters
-        ---------
+        ----------
         n : int
             Which program to get.
         program_or_profile : {'program', 'profile'}, optional
