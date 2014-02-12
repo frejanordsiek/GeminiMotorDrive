@@ -16,6 +16,7 @@ setup(name='GeminiMotorDrive',
       py_modules=['GeminiMotorDrive'],
       requires=['serial'],
       license='BSD',
+      keywords='Parker Hannifin Gemini stepper servo motor',
       classifiers=[
           "Programming Language :: Python :: 3",
           "Development Status :: 3 - Alpha",
