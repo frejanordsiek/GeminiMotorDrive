@@ -23,6 +23,5 @@ setup(name='hdf5storage',
           "Intended Audience :: Manufacturing",
           "Intended Audience :: Science/Research",
           "Topic :: System :: Hardware :: Hardware Drivers",
-          "Topic :: Software Development :: Libraries :: Python Modules"
           ],
       )
