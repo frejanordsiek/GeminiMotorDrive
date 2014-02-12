@@ -15,6 +15,7 @@ setup(name='GeminiMotorDrive',
       url='https://github.com/frejanordsiek/GeminiMotorDrive',
       py_modules=['GeminiMotorDrive'],
       requires=['serial'],
+      license='BSD',
       classifiers=[
           "Programming Language :: Python :: 3",
           "Development Status :: 3 - Alpha",
