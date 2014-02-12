@@ -9,6 +9,9 @@ stepper/servo motor drives.
    Only the ASCII protocol is supported at this time, meaning that only
    newer GV6 and GT6 drives are supported.
 
+The package's documetation is found at
+http://pythonhosted.org/GeminiMotorDrive/
+
 The package's source code is found at
 https://github.com/frejanordsiek/GeminiMotorDrive
 
