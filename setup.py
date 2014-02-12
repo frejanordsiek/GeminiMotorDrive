@@ -6,7 +6,7 @@ from setuptools import setup
 with open('README.rst') as file:
     long_description = file.read()
 
-setup(name='hdf5storage',
+setup(name='GeminiMotorDrive',
       version='0.1',
       description='Utilities to control Parker Hannifin Gemini stepper/servo motor drives.',
       long_description=long_description,
