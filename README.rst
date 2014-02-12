@@ -4,7 +4,7 @@ Overview
 This Python package provides an interface to Parker Hannifin Gemini
 stepper/servo motor drives.
 
-.. note
+.. note::
    
    Only the ASCII protocol is supported at this time, meaning that only
    newer GV6 and GT6 drives are supported.

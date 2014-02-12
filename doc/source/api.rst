@@ -1,5 +1,5 @@
-GeminiMotorDrive
-================
+API
+===
 
 .. currentmodule:: GeminiMotorDrive
 
