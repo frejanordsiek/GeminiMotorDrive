@@ -969,6 +969,31 @@ class GeminiG6(object):
         return (not self.command_error(self.send_command('C',
                 timeout=1.0, immediate=True, max_retries=max_retries)))
 
+    def stop(self, max_retries=0):
+        """ Stops motion.
+
+        The drive stops the motor.
+
+        Parameters
+        ----------
+        max_retries : int, optional
+            Maximum number of retries to do to kill the drive in the
+            case of errors.
+
+        Returns
+        -------
+        bool
+            Whether the last stop command (last try or retry) returned
+            any errors or not.
+
+        Notes
+        -----
+        The command sent to the drive is '!S1'.
+
+        """
+        return (not self.command_error(self.send_command('S1', \
+                timeout=1.0, immediate=True, max_retries=max_retries)))
+
     def kill(self, max_retries=0):
         """ Kills the drive.
 
