@@ -33,6 +33,7 @@ import threading
 
 import serial
 
+
 class ASCII_RS232(object):
     """ ASCII RS232 comm.  driver for a Parker Motion Gemini drive.
 
@@ -407,36 +408,6 @@ class ASCII_RS232(object):
         # no errors should be returned, if it has no errors.
         return (response[2] not in [response[0], '- ' + response[0]]
                 or response[3] is not None)
-
-    def strip_commands(self, commands):
-        """ Strips a sequence of commands.
-
-        Strips down the sequence of commands by removing comments and
-        surrounding whitespace around each individual command and then
-        removing blank commands.
-
-        Parameters
-        ----------
-        commands : iterable of strings
-            Iterable of commands to strip.
-
-        Returns
-        -------
-        stripped_commands : list of str
-            The stripped commands with blank ones removed.
-
-        """
-        # Go through each command one by one, stripping it and adding it
-        # to a growing list if it is not blank. Each command needs to be
-        # converted to an str if it is a bytes.
-        stripped_commands = []
-        for v in commands:
-            if isinstance(v, bytes):
-                v = v.decode(errors='replace')
-            v = v.split(';')[0].strip()
-            if len(v) != 0:
-                stripped_commands.append(v)
-        return stripped_commands
 
     def send_command(self, command, immediate=False, timeout=1.0,
                      max_retries=0, eor=('\n', '\n- ')):
