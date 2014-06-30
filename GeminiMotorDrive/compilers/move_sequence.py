@@ -27,11 +27,9 @@
 import math
 import copy
 
-import GeminiMotorDrive.units.mks as mks_to_motor
-
 
 def compile_sequence(cycles, program_or_profile='program',
-                     units='motor', dmepit=None, eres=None):
+                     unit_converter=None):
     """ Makes the command list for a move sequence.
 
     Constructs the list of commands to execute the given sequence of
@@ -43,9 +41,6 @@ def compile_sequence(cycles, program_or_profile='program',
     before doing the next motion), waiting a given interval of time till
     starting the next move, and looping over a sequence of moves.
 
-    Everything is in motor units which are encoder counts for distance,
-    pitches/s for velocity, and pitches/s^2 for acceleration.
-
     Parameters
     ----------
     cycles : iterable of dicts
@@ -54,16 +49,10 @@ def compile_sequence(cycles, program_or_profile='program',
     program_or_profile : {'program', 'profile'}, optional
         Whether program or profile motion commands should be used.
         Anything other than these two values implies the default.
-    units : {'motor', 'mks'}, optional
-        Whether the distances, velocities, and accelerations provided
-        in `cycles` are in motor or MKS units. ``'motor'`` is the
-        default.
-    dmepit : float, optional
-        Electrical pitch of the motor. Only needs to be set if `units`
-        is ``'mks'``.
-    eres : int, optional
-        Encoder resolution. Only needs to be set if `units` is
-        ``'mks'``.
+    unit_converter : UnitConverter, optional
+        ``GeminiMotorDrive.utilities.UnitConverter`` to use to convert
+        the units in `cycles` to motor units. ``None`` indicates that
+        they are already in motor units.
 
     Returns
     -------
@@ -87,7 +76,8 @@ def compile_sequence(cycles, program_or_profile='program',
     See Also
     --------
     get_sequence_time
-    convert_mks_to_motor_sequence
+    convert_sequence_to_motor_units
+    GeminiMotorDrive.utilities.UnitConverter
 
     Examples
     --------
@@ -163,11 +153,11 @@ def compile_sequence(cycles, program_or_profile='program',
 
     """
     # If needed, cycles needs to be converted to motor units.
-    if units.lower() == 'mks':
-        cv_cycles = convert_mks_to_motor_sequence(cycles, dmepit=dmepit,
-                                                  eres=eres)
-    else:
+    if unit_converter is None:
         cv_cycles = cycles
+    else:
+        cv_cycles = convert_sequence_to_motor_units(cycles, \
+            unit_converter=unit_converter)
 
     # Initially, we have no commands in our command list.
     commands = []
@@ -274,7 +264,7 @@ def compile_sequence(cycles, program_or_profile='program',
     return commands
 
 
-def get_sequence_time(cycles, units='motor', eres=None):
+def get_sequence_time(cycles, unit_converter=None, eres=None):
     """ Calculates the time the move sequence will take to complete.
 
     Calculates the amount of time it will take to complete the given
@@ -283,21 +273,19 @@ def get_sequence_time(cycles, units='motor', eres=None):
     next motion), waiting a given interval of time till starting the
     next move, and looping over a sequence of moves.
 
-    Everything is in motor units which are encoder counts for distance,
-    pitches/s for velocity, and pitches/s^2 for acceleration.
-
     Parameters
     ----------
     cycles : list of dicts
         The ``list`` of cycles of motion to do one after another. See
         ``compile_sequence`` for format.
-    units : {'motor', 'mks'}, optional
-        Whether the distances, velocities, and accelerations provided
-        in `cycles` are in motor or MKS units. ``'motor'`` is the
-        default.
-    eres : int, optional
-        Encoder resolution. Only needs to be set if `units` is
-        ``'motor'``.
+    unit_converter : UnitConverter, optional
+        ``GeminiMotorDrive.utilities.UnitConverter`` to use to convert
+        the units in `cycles` to motor units. ``None`` indicates that
+        they are already in motor units.
+    eres : int
+        Encoder resolution. Only relevant if `unit_converter` is
+        ``None``.
+
 
     Returns
     -------
@@ -307,12 +295,13 @@ def get_sequence_time(cycles, units='motor', eres=None):
     See Also
     --------
     compile_sequence
+    GeminiMotorDrive.utilities.UnitConverter
     move_time
 
     """
-    # If we are doing MKS units, then that is equivalent to motor units
-    # but with eres equal to one.
-    if units.lower() == 'mks':
+    # If we are doing unit conversion, then that is equivalent to motor
+    # units but with eres equal to one.
+    if unit_converter is not None:
         eres = 1
     # Starting with 0 time, steadily add the time of each movement.
     tme = 0.0
@@ -394,24 +383,19 @@ def move_time(move, eres):
         return math.sqrt(2*D / (A + AD))
 
 
-def convert_mks_to_motor_sequence(cycles, dmepit, eres):
-    """ Converts a move sequence from MKS units to motor units.
+def convert_sequence_to_motor_units(cycles, unit_converter):
+    """ Converts a move sequence to motor units.
 
-    Converts a move sequence from MKS units to motor units. Types of
-    motion supported are moves from one position to another (the motion
-    will always come to a stop before doing the next motion), waiting a
-    given interval of time till starting the next move, and looping over
-    a sequence of moves.
+    Converts a move sequence to motor units using the provied converter.
 
     Parameters
     ----------
     cycles : iterable of dicts
         The iterable of cycles of motion to do one after another. See
         ``compile_sequence`` for format.
-    dmepit : float
-        Electrical pitch of the motor.
-    eres : int
-        Encoder resolution.
+    unit_converter : UnitConverter, optional
+        ``GeminiMotorDrive.utilities.UnitConverter`` to use to convert
+        the units in `cycles` to motor units.
 
     Returns
     -------
@@ -421,7 +405,7 @@ def convert_mks_to_motor_sequence(cycles, dmepit, eres):
     See Also
     --------
     compile_sequence
-    GeminiMotorDrive.mks_to_motor
+    GeminiMotorDrive.utilities.UnitConverter
 
     """
     # Make a deep copy of cycles so that the conversions don't damage
@@ -432,14 +416,14 @@ def convert_mks_to_motor_sequence(cycles, dmepit, eres):
     for cycle in cv_cycles:
         # Go through each of the moves and do the conversions.
         for move in cycle['moves']:
-            move['A'] = mks_to_motor.convert_velocity_acceleration( \
-                move['A'], dmepit=dmepit)
-            move['AD'] = mks_to_motor.convert_velocity_acceleration( \
-                move['AD'], dmepit=dmepit)
-            move['V'] = mks_to_motor.convert_velocity_acceleration( \
-                move['V'], dmepit=dmepit)
-            move['D'] = int(mks_to_motor.convert_distance(move['D'], \
-                dmepit=dmepit, eres=eres))
+            move['A'] = unit_converter.to_motor_velocity_acceleration( \
+                move['A'])
+            move['AD'] = \
+                unit_converter.to_motor_velocity_acceleration( \
+                move['AD'])
+            move['V'] = unit_converter.to_motor_velocity_acceleration( \
+                move['V'])
+            move['D'] = int(unit_converter.to_motor_distance(move['D']))
 
     # Now return the converted move sequence.
     return cv_cycles
