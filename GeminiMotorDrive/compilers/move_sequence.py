@@ -27,7 +27,7 @@
 import math
 import copy
 
-from GeminiMotorDrive.utilities import mks_to_motor
+import GeminiMotorDrive.units.mks as mks_to_motor
 
 
 def compile_sequence(cycles, program_or_profile='program',
