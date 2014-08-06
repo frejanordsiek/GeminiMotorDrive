@@ -375,13 +375,25 @@ def move_time(move, eres):
         return (sum(accel_times) + (D-sum(dists))/V)
     else:
         # We need to find the time it takes for the acceleration path
-        # and deceleration path to meet, or in other words, when the sum
-        # of their distances is D.
+        # and deceleration path to meet and have the same speeds.
         #
-        # D = 0.5*A*(t**2) + 0.5*AD*(t**2)
-        # t**2 = D / (0.5 * (A + AD))
-        return math.sqrt(2*D / (A + AD))
-
+        # (1) t = t_1 + t_2
+        # (2) A*t_1 = AD*t_2
+        # (3) D = 0.5*A*(t_1**2) + 0.5*AD*(t_2**2)
+        #
+        # Re-writing t_2 in terms of t_1 using (2)
+        # (4) t_2 = (A / AD) * t_1
+        #
+        # Putting that into (1) and (3)
+        # (4) t = (1 + (A / AD)) * t_1
+        # (5) D = 0.5*A*(1 + (A / AD)) * (t_1**2)
+        #
+        # Solving (5) for t_1,
+        # (6) t_1 = sqrt( 2*D / (A * (1 + (A / AD))))
+        #
+        # Putting that into (4),
+        # t = sqrt(2*D*(1 + (A / AD)) / A)
+        return math.sqrt(2*D * (1 + (A / AD)) / A)
 
 def convert_sequence_to_motor_units(cycles, unit_converter):
     """ Converts a move sequence to motor units.
