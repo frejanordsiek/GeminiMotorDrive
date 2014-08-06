@@ -26,3 +26,13 @@ To install GeminiMotorDrive, download the package and run the command::
 
     python3 setup.py install
 
+
+Versions
+========
+
+0.1.1. Bugfix release fixing one bug.
+       * Fixed bug in how ``GeminiG6.move_time`` calculated the time
+         a movement would take in the case that the drive cannot reach
+         its maximum velocity in the motion.
+
+0.1. Initial version.

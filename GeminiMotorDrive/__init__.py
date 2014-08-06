@@ -26,10 +26,10 @@
 
 """ Module for controlling a Parker Hannifin Gemini GV-6 or GT-6.
 
-Version 0.1
+Version 0.1.1
 """
 
-__version__ = "0.1"
+__version__ = "0.1.1"
 
 import math
 import copy
