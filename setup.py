@@ -20,7 +20,7 @@ setup(name='GeminiMotorDrive',
       classifiers=[
           "Programming Language :: Python :: 3",
           "Development Status :: 3 - Alpha",
-          "License :: OSI Approved :: BSD License",
+          "License :: OSI Approved :: Apache Software License",
           "Operating System :: OS Independent",
           "Intended Audience :: Manufacturing",
           "Intended Audience :: Science/Research",
