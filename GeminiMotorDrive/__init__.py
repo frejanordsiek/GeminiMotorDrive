@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" Module for controlling a Parker Hannifin Gemini GV-6 or GT-6.
+"""
+This is the GeminiMotorDrive package, a Python package for controlling a
+Parker Hannifin Gemini GV-6 and GT-6 servo and stepper motor drives.
 
 Version 0.2
+
 """
 
 __version__ = "0.2"
@@ -58,6 +61,11 @@ def get_driver(driver='ASCII_RS232', *args, **keywords):
     **keywords : additional keyword arguments
         Additional keyword arguments to pass onto the constructor for
         the driver.
+
+    Returns
+    -------
+    drivers : drivers
+        The connected drivers class that is connected to the drive.
 
     Raises
     ------
@@ -103,6 +111,7 @@ class GeminiG6(object):
     denergize_on_kill : bool
     encoder_resolution : int
     electrical_pitch : float
+    max_velocity : float
     motion_commanded : bool
 
     See Also
@@ -154,6 +163,11 @@ class GeminiG6(object):
             Maximum number of retries to do per command in the case of
             errors.
 
+        Returns
+        -------
+        value : bool, int, or float
+            The value of the specified parameter.
+
         Raises
         ------
         TypeError
@@ -164,11 +178,6 @@ class GeminiG6(object):
         ValueError
             If the value returned to the drive cannot be converted to
             the proper type.
-
-        Returns
-        -------
-        bool, int, or float
-            The value of the specified parameter.
 
         See Also
         --------
@@ -235,7 +244,7 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
+        success : bool
             Whether the last attempt to set the parameter was successful
             (``True``) or not (``False`` meaning it had an error).
 
@@ -283,9 +292,10 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
-            Whether the last pause command (last try or retry) returned
-            any errors or not.
+        success : bool
+            Whether the last pause command (last try or retry) was
+            successful (``True``) or not (``False`` meaning it had an
+            error).
 
         Notes
         -----
@@ -314,9 +324,10 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
-            Whether the last unpause command (last try or retry)
-            returned any errors or not.
+        success : bool
+            Whether the last unpause command (last try or retry) was
+            successful (``True``) or not (``False`` meaning it had an
+            error).
 
         Notes
         -----
@@ -344,9 +355,10 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
-            Whether the last stop command (last try or retry) returned
-            any errors or not.
+        success : bool
+            Whether the last stop command (last try or retry) was
+            successful (``True``) or not (``False`` meaning it had an
+            error).
 
         Notes
         -----
@@ -362,7 +374,7 @@ class GeminiG6(object):
 
         The drive stops the motor and any running program. The motor
         will de-energize depending on the state of
-        :py:attr:`denergize_on_kill`.
+        ``denergize_on_kill``.
 
         Parameters
         ----------
@@ -372,9 +384,10 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
-            Whether the last kill command (last try or retry) returned
-            any errors or not.
+        success : bool
+            Whether the last kill command (last try or retry) was
+            successful (``True``) or not (``False`` meaning it had an
+            error).
 
         Notes
         -----
@@ -403,9 +416,10 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
-            Whether the last reset command (last try or retry) returned
-            any errors or not.
+        success : bool
+            Whether the last reset command (last try or retry) was
+            successful (``True``) or not (``False`` meaning it had an
+            error).
 
         Notes
         -----
@@ -435,9 +449,9 @@ class GeminiG6(object):
 
         Returns
         -------
-        list
+        commands : list of str
             ``list`` of ``str`` commands making up the program. The
-            trailing 'END' is removed.
+            trailing 'END' is removed. Empty if there was an error.
 
         Notes
         -----
@@ -496,7 +510,7 @@ class GeminiG6(object):
 
         Returns
         -------
-        bool
+        success : bool
             Whether the program or profile was successfully set or not
             (an identical program already existing on the drive is
             considered a success).
@@ -595,7 +609,7 @@ class GeminiG6(object):
 
         Returns
         -------
-        list
+        output : list
             A 5-element ``list``. The elements, in order, are the
             sanitized command (``str``), the full response (``str``),
             the echoed command (``str``), any error response (``None``

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
+""" Module for the driver classes for the drives.
 """
 
 import io
@@ -148,7 +148,7 @@ class ASCII_RS232(object):
             Whether the echoing of the command as it is being written to
             the drive should be used to correct mistakes in what the
             drive is seeing, or whether the default set when the
-            instance of this class was created shoudl be used
+            instance of this class was created should be used
             (``None``).
 
         Returns

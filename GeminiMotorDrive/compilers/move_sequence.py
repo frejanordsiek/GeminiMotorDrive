@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Module for working with move sequences and compiling them to movement
+commands, programs, and profiles for a Gemini drive.
+
+Move sequences care described in ``compile_sequence`` along with a few
+examples.
+
+"""
+
 import math
 import copy
 
@@ -278,7 +287,7 @@ def get_sequence_time(cycles, unit_converter=None, eres=None):
     Returns
     -------
     time : float
-        Time the move sequence will take.
+        Time the move sequence will take in seconds.
 
     See Also
     --------
@@ -327,7 +336,7 @@ def move_time(move, eres):
     Returns
     -------
     time : float
-        Time the move will take.
+        Time the move will take in seconds.
 
     See Also
     --------
