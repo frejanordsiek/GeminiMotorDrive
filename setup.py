@@ -7,7 +7,7 @@ with open('README.rst') as file:
     long_description = file.read()
 
 setup(name='GeminiMotorDrive',
-      version='0.1.1',
+      version='0.2',
       description='Utilities to control Parker Hannifin Gemini stepper/servo motor drives.',
       long_description=long_description,
       author='Freja Nordsiek',
