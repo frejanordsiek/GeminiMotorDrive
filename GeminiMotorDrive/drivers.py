@@ -454,28 +454,33 @@ class ASCII_RS232(object):
         Simple command energizing the motor with no response and no
         errors.
 
-        >>> ra = rs232_ascii('/dev/ttyS1')
-        >>> ra.send_command('DRIVE1', immediate=False, timeout=1.0)
-        ['DRIVE1', 'DRIVE1\\r', 'DRIVE1', None, []]
+        >>> from GeminiMotorDrive.drivers import ASCII_RS232
+        >>> ar = ASCII_RS232('/dev/ttyS1')
+        >>> ar.send_command('DRIVE1', immediate=False, timeout=1.0)
+        ['DRIVE1', 'DRIVE1\\r\\r\\n', 'DRIVE1', None, []]
 
         Same command but made immediate.
 
-        >>> ra = rs232_ascii('/dev/ttyS1')
-        >>> ra.send_command('DRIVE1', immediate=True, timeout=1.0)
-        ['!DRIVE1', '!DRIVE1\\r', '!DRIVE1', None, []]
+        >>> from GeminiMotorDrive.drivers import ASCII_RS232
+        >>> ar = ASCII_RS232('/dev/ttyS1')
+        >>> ar.send_command('DRIVE1', immediate=True, timeout=1.0)
+        ['!DRIVE1', '!DRIVE1\\r\\r\\n', '!DRIVE1', None, []]
 
         Same command with a typo.
 
-        >>> ra = rs232_ascii('/dev/ttyS1')
-        >>> ra.send_command('DRIV1', immediate=False, timeout=1.0)
-        ['DRIV1', 'DRIV1\\r*UNDEFINED_LABEL\\n', 'DRIV1',
+        >>> from GeminiMotorDrive.drivers import ASCII_RS232
+        >>> ar = ASCII_RS232('/dev/ttyS1')
+        >>> ar.send_command('DRIV1', immediate=False, timeout=1.0)
+        ['DRIV1', 'DRIV1\\r*UNDEFINED_LABEL\\r\\r\\n', 'DRIV1',
          'UNDEFINED_LABEL', []]
 
         Simple command asking whether the motor is energized or not.
 
-        >>> g = GeminiG6('/dev/ttyS1')
-        >>> g.send_command('DRIVE', immediate=False, timeout=1.0)
-        ['DRIVE', 'DRIVE\\r*DRIVE1\\n', 'DRIVE', None, ['*DRIVE1']]
+        >>> from GeminiMotorDrive.drivers import ASCII_RS232
+        >>> ar = ASCII_RS232('/dev/ttyS1')
+        >>> ar.send_command('DRIVE', immediate=False, timeout=1.0)
+        ['DRIVE', 'DRIVE\\r*DRIVE1\\r\\r\\n', 'DRIVE', None,
+         ['*DRIVE1']]
 
         """
         # Execute the command till it either doesn't have an error or
@@ -558,10 +563,11 @@ class ASCII_RS232(object):
         movement distances without checking that the motion won't damage
         something (very motor and application specific).
 
-        >>> ra = rs232_ascii('/dev/ttyS1')
+        >>> from GeminiMotorDrive.drivers import ASCII_RS232
+        >>> ra = ASCII_RS232('/dev/ttyS1')
         >>> ra.send_commands(['DRIVE1', 'D-10000', 'GO']
-                             + ['D-10000','GO','D10000','GO']*4
-                             + [ 'DRIVE0'])
+        ...                  + ['D-10000','GO','D10000','GO']*4
+        ...                  + [ 'DRIVE0'])
         [['DRIVE1', 'DRIVE1\\r', 'DRIVE1', None, []],
          ['D-10000', 'D-10000\\r', 'D-10000', None, []],
          ['GO', 'GO\\r', 'GO', None, []],
@@ -582,7 +588,6 @@ class ASCII_RS232(object):
          ['D10000', 'D10000\\r', 'D10000', None, []],
          ['GO', 'GO\\r', 'GO', None, []],
          ['DRIVE0', 'DRIVE0\\r', 'DRIVE0', None, []]]
-
 
         """
         # If eor is not a list, make a list of it replicated enough for

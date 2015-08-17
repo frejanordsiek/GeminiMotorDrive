@@ -81,70 +81,74 @@ def compile_sequence(cycles, program_or_profile='program',
 
     Simple program style two motions with a pause in between.
 
+    >>> from GeminiMotorDrive.compilers.move_sequence import *
     >>> cycles = [{'iterations':1, 'wait_times':[1, 0],
-                  'moves':[{'A':100, 'AD':0, 'D':-1000, 'V':100},
-                  {'A':90, 'AD':0, 'D':-1000, 'V':100}]}]
+    ...           'moves':[{'A':100, 'AD':0, 'D':-1000, 'V':100},
+    ...           {'A':90, 'AD':0, 'D':-1000, 'V':100}]}]
     >>> compile_sequence(cycles)
-    ['A100.0',
-     'AD0.0',
-     'V100.0',
-     'D-1000.0',
+    ['A100',
+     'AD0',
+     'V100',
+     'D-1000',
      'GO1',
      'WAIT(AS.1=b0)',
-     'T1.0',
-     'A90.0',
+     'T1',
+     'A90',
      'GO1',
      'WAIT(AS.1=b0)']
 
     The same motion but in profile style commands
 
+    >>> from GeminiMotorDrive.compilers.move_sequence import *
     >>> cycles = [{'iterations':1, 'wait_times':[1, 0],
-                  'moves':[{'A':100, 'AD':0, 'D':-1000, 'V':100},
-                  {'A':90, 'AD':0, 'D':-1000, 'V':100}]}]
+    ...           'moves':[{'A':100, 'AD':0, 'D':-1000, 'V':100},
+    ...           {'A':90, 'AD':0, 'D':-1000, 'V':100}]}]
     >>> compile_sequence(cycles, program_or_profile='profile')
-    ['A100.0',
-     'AD0.0',
-     'V100.0',
-     'D-1000.0',
+    ['A100',
+     'AD100',
+     'V100',
+     'D-1000',
      'VF0',
      'GOBUF1',
      'GOWHEN(T=1000)',
-     'A90.0',
+     'A90',
+     'AD90',
      'VF0',
      'GOBUF1']
 
     Another motion with a back and forth loop (100 iterations) in the
     middle, done in program style commands.
 
+    >>> from GeminiMotorDrive.compilers.move_sequence import *
     >>> cycles = [{'iterations':1, 'wait_times':[1],
-                  'moves':[{'A':100, 'AD':0, 'D':-1000, 'V':100}]},
-                  {'iterations':100, 'wait_times':[0, 0],
-                  'moves':[{'A':50, 'AD':40, 'D':-1000, 'V':30},
-                  {'A':50, 'AD':40, 'D':1000, 'V':30}]},
-                  {'iterations':1, 'wait_times':[0],
-                  'moves':[{'A':100, 'AD':0, 'D':1000, 'V':100}]}]
+    ...           'moves':[{'A':100, 'AD':0, 'D':-1000, 'V':100}]},
+    ...           {'iterations':100, 'wait_times':[0, 0],
+    ...           'moves':[{'A':50, 'AD':40, 'D':-1000, 'V':30},
+    ...           {'A':50, 'AD':40, 'D':1000, 'V':30}]},
+    ...           {'iterations':1, 'wait_times':[0],
+    ...           'moves':[{'A':100, 'AD':0, 'D':1000, 'V':100}]}]
     >>> compile_sequence(cycles)
-    ['A100.0',
-     'AD0.0',
-     'V100.0',
-     'D-1000.0',
+    ['A100',
+     'AD0',
+     'V100',
+     'D-1000',
      'GO1',
      'WAIT(AS.1=b0)',
-     'T1.0',
+     'T1',
      'L100',
-     'A50.0',
-     'AD40.0',
-     'V30.0',
-     'D-1000.0',
+     'A50',
+     'AD40',
+     'V30',
+     'D-1000',
      'GO1',
      'WAIT(AS.1=b0)',
      'D~',
      'GO1',
      'WAIT(AS.1=b0)',
      'LN',
-     'A100.0',
-     'AD0.0',
-     'V100.0',
+     'A100',
+     'AD0',
+     'V100',
      'GO1',
      'WAIT(AS.1=b0)']
 
