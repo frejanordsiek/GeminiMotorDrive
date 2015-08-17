@@ -15,6 +15,7 @@
 """ Module for the driver classes for the drives.
 """
 
+import sys
 import io
 import time
 import threading
@@ -163,7 +164,10 @@ class ASCII_RS232(object):
 
         # Convert to bytes and then strip comments, whitespace, and
         # newlines.
-        c = bytes(command, encoding='ASCII')
+        if sys.hexversion >= 0x03000000:
+            c = bytes(command, encoding='ASCII')
+        else:
+            c = command
         c = c.split(b';')[0].strip()
 
         # If the command is supposed to be immediate, insure that it
@@ -183,19 +187,24 @@ class ASCII_RS232(object):
                 self._ser.write(bytes([c[i]]))
                 time.sleep(0.01)
         else:
-            # If we are doing an infinite timeout, set it to the maximum
-            # a threading.Timer is allowed.
+            # Infinite timeouts need to be converted to None. Finite
+            # ones need to be checked to make sure they are not too big,
+            # which is threading.TIMEOUT_MAX on Python 3.x and not
+            # specified on Python 2.x (lets use a week).
             if timeout is None or timeout <= 0:
-                timeout = threading.TIMEOUT_MAX
+                timeout = None
+            else:
+                if sys.hexversion >= 0x03000000:
+                    maxtimeout = threading.TIMEOUT_MAX
+                else:
+                    maxtimeout = 7*24*3600
+                timeout = min(timeout, maxtimeout)
 
             # A timer will be made that takes timeout to finish. Then,
             # it is a matter of checking whether it is alive or not to
-            # know whether the timeout was exceeded or not. min does
-            # have to be used to make sure that a timeout greater than
-            # the maximum allowed TIMEOUT_MAX is not used. Then, the
+            # know whether the timeout was exceeded or not. Then, the
             # timer is started.
-            tm = threading.Timer(min(timeout, threading.TIMEOUT_MAX),
-                                 lambda : None)
+            tm = threading.Timer(timeout, lambda : None)
             tm.start()
 
             # Each character needs to be written one by one while the
@@ -236,7 +245,10 @@ class ASCII_RS232(object):
         # Write the carriage return to enter the command and then return
         # the sanitized command.
         self._ser.write(b'\r')
-        return c.decode(errors='replace')
+        if sys.hexversion >= 0x03000000:
+            return c.decode(errors='replace')
+        else:
+            return c
 
     def _get_response(self, timeout=1.0, eor=('\n', '\n- ')):
         """ Reads a response from the drive.
@@ -272,19 +284,24 @@ class ASCII_RS232(object):
         else:
             # A timer will be made that takes timeout to finish. Then,
             # it is a matter of checking whether it is alive or not to
-            # know whether the timeout was exceeded or not. min does
-            # have to be used to make sure that a timeout greater than
-            # the maximum allowed TIMEOUT_MAX is not used. Then, the
-            # timer is started.
-            tm = threading.Timer(min(timeout, threading.TIMEOUT_MAX),
-                                 lambda : None)
+            # know whether the timeout was exceeded or not. They need to
+            # be checked to make sure they are not too big, which is
+            # threading.TIMEOUT_MAX on Python 3.x and not specified on
+            # Python 2.x (lets use a week). Then, the timer is started.
+            if sys.hexversion >= 0x03000000:
+                maxtimeout = threading.TIMEOUT_MAX
+            else:
+                maxtimeout = 7*24*3600
+            timeout = min(timeout, maxtimeout)
+            tm = threading.Timer(timeout, lambda : None)
             tm.start()
 
             # eor needs to be converted to bytes. If it is just an str,
             # it needs to be wrapped in a tuple.
             if isinstance(eor, str):
                 eor = tuple([eor])
-            eor = [s.encode(encoding='ASCII') for s in eor]
+            if sys.hexversion >= 0x03000000:
+                eor = [s.encode(encoding='ASCII') for s in eor]
 
             # Read from the serial port into buf until the EOR is found
             # or the timer has stopped. A small pause is done each time
@@ -315,7 +332,10 @@ class ASCII_RS232(object):
                 buf = buf[:(matches[index][0] + len(matches[index][1]))]
 
             # Convert to an str before returning.
-            return buf.decode(errors='replace')
+            if sys.hexversion >= 0x03000000:
+                return buf.decode(errors='replace')
+            else:
+                return buf
 
     def _process_response(self, response):
         """ Processes a response from the drive.
