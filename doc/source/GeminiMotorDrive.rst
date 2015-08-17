@@ -1,5 +1,5 @@
-API
-===
+GeminiMotorDrive
+================
 
 .. currentmodule:: GeminiMotorDrive
 
@@ -7,11 +7,10 @@ API
 
 .. autosummary::
 
-   GeminiError
    CommandError
-   GeminiVersions
+   GeminiError
+   get_driver
    GeminiG6
-   LinearMotorGV6
 
 
 GeminiError
@@ -28,26 +27,16 @@ CommandError
    :show-inheritance:
 
 
-GeminiVersions
---------------
+get_driver
+----------
 
-.. autoclass:: GeminiVersions
-   :members:
-   :show-inheritance:
+.. autofunction:: get_driver
 
 
 GeminiG6
 --------
 
 .. autoclass:: GeminiG6
-   :members:
-   :show-inheritance:
-
-
-LinearMotorGV6
---------------
-
-.. autoclass:: LinearMotorGV6
    :members:
    :show-inheritance:
 
