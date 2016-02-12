@@ -51,7 +51,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'GeminiMotorDrive'
-copyright = '2014, Freja Nordsiek'
+copyright = '2014-2016, Freja Nordsiek'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
