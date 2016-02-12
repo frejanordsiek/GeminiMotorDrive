@@ -493,7 +493,7 @@ class GeminiG6(object):
         Parameters
         ----------
         n : int
-            Which program to get.
+            Which program to set.
         commands : list or tuple of strings
             ``list`` or ``tuple`` of commands to send to the drive. Each
             command must be a string.
