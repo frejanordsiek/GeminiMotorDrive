@@ -1,3 +1,8 @@
+import sys
+
+if sys.hexversion < 0x3000000:
+    raise NotImplementedError('Python < 3.0 not supported.')
+
 import ez_setup
 ez_setup.use_setuptools()
 
