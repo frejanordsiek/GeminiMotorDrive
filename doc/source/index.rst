@@ -10,8 +10,9 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   
    information
+   GettingStarted
    api
 
 Indices and tables
